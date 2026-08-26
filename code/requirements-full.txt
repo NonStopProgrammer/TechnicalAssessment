@@ -1,0 +1,55 @@
+# ---------------------------------------------------------------------------
+# Production-parity dependency set.
+#
+# Install this (on top of requirements.txt, on GPU-capable infrastructure)
+# to switch every provider from its MVP stand-in to the real component named
+# in the architecture docs, purely via the `*_PROVIDER` flags in `.env`
+# (see `.env.example`). No application code changes needed — this is the
+# fallback-chain / config-driven-routing pattern from LLM-2.3 applied to the
+# whole stack, not just model selection.
+#
+# Not installed by default because: vllm/torch pull multi-GB CUDA wheels,
+# presidio/spacy need a language model download, nemoguardrails and
+# apache-airflow have wide dependency trees that are unnecessary for
+# exercising the architecture locally. Each is annotated with the
+# requirement ID it satisfies and the provider flag that activates it.
+# ---------------------------------------------------------------------------
+
+-r requirements.txt
+
+# --- LLM-1.1: self-hosted generation/routing tier ---
+vllm==0.6.1              # LLM_*_PROVIDER=vllm (served separately as an OpenAI-compatible endpoint)
+
+# --- RAG-3.1: embedding model, RAG-4.3: reranker ---
+sentence-transformers==3.1.1   # EMBEDDING_PROVIDER=tei local fallback / offline TEI equivalent
+text-embeddings-inference-client==0.1.0 ; python_version >= "3.10"  # TEI HTTP client, EMBEDDING_PROVIDER=tei
+
+# --- RAG-4.4: contextual compression ---
+llmlingua==0.2.2         # COMPRESSION_PROVIDER=llmlingua
+
+# --- RAG-1.1: layout-aware multi-format parsing ---
+unstructured[pdf,docx]==0.15.13
+
+# --- LLM-4.3: PII redaction ---
+presidio-analyzer==2.2.355   # PII_REDACTION_PROVIDER=presidio
+presidio-anonymizer==2.2.355
+spacy==3.7.6                  # + `python -m spacy download en_core_web_lg`
+
+# --- LLM-4.5: topical/scope guardrail ---
+nemoguardrails==0.10.1    # TOPICAL_RAIL_PROVIDER=nemo
+
+# --- LLM-2.5: semantic response cache ---
+gptcache==0.1.44
+
+# --- 2C: evaluation framework LLM-judged metrics ---
+ragas==0.1.20
+datasets==2.21.0
+
+# --- RAG-1.5: ingestion / impact-scan / nightly-eval orchestration ---
+apache-airflow==2.10.1
+
+# --- OBS-1.2: LLM tracing/cost ---
+langfuse==2.50.0
+
+# --- OBS-1.1: infra metrics client-side instrumentation ---
+prometheus-client==0.20.0

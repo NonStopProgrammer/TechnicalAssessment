@@ -1,0 +1,48 @@
+# SEC-3.1: the `inference` namespace has NO outbound internet route — this
+# is the concrete control behind "self-hosted vLLM serving is
+# architecturally incapable of calling out, independent of any code-level
+# mistake". Combined with a VPC route table that has no NAT/IGW route for
+# these subnets (not expressible in a NetworkPolicy alone — see
+# infra/README.md), this is defense in depth, not the only layer.
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: inference-deny-all-egress-except-intra-namespace
+  namespace: inference
+spec:
+  podSelector: {}
+  policyTypes: [Egress]
+  egress:
+    # DNS is required for in-cluster service discovery.
+    - to: [{ namespaceSelector: {} }]
+      ports:
+        - { protocol: UDP, port: 53 }
+        - { protocol: TCP, port: 53 }
+    # Only the `agent` and `api` namespaces may call inference — never the
+    # public internet, never `ingestion` (no reason for a raw document
+    # pipeline to talk to a model server directly).
+    - to:
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: agent }
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: api }
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: platform } # metrics/tracing scrape
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-cross-namespace-ingress
+  namespace: retrieval
+spec:
+  podSelector: {}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: agent }
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: api }
+        - namespaceSelector:
+            matchLabels: { kubernetes.io/metadata.name: ingestion } # writes new vectors

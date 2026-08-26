@@ -1,0 +1,61 @@
+[
+  {
+    "transaction_id": "TXN-1001",
+    "amount": 2000000,
+    "currency": "USD",
+    "counterparty": "Meridian Offshore Holdings Ltd",
+    "counterparty_kyc_status": "not_verified",
+    "jurisdictions": ["IN"],
+    "instrument_type": "wire_transfer",
+    "customer_type": "institutional",
+    "transaction_type": "cross_border_payment",
+    "counterparty_jurisdiction_risk": "high"
+  },
+  {
+    "transaction_id": "TXN-1002",
+    "amount": 75000000,
+    "currency": "USD",
+    "counterparty": "FinServ Capital Markets (Singapore) Pte Ltd",
+    "counterparty_kyc_status": "verified",
+    "jurisdictions": ["IN", "EU"],
+    "instrument_type": "interest_rate_swap",
+    "customer_type": "intra_group",
+    "transaction_type": "derivative_trade"
+  },
+  {
+    "transaction_id": "TXN-1003",
+    "amount": 150000,
+    "currency": "EUR",
+    "counterparty": "Individual Retail Client - J. Dupont",
+    "counterparty_kyc_status": "verified",
+    "jurisdictions": ["EU"],
+    "instrument_type": "structured_note",
+    "customer_type": "retail",
+    "transaction_type": "investment",
+    "is_appropriateness_assessed": false
+  },
+  {
+    "transaction_id": "TXN-1004",
+    "amount": 4200000,
+    "currency": "INR",
+    "counterparty": "Sunrise Agri Finance NBFC Ltd",
+    "counterparty_kyc_status": "verified",
+    "jurisdictions": ["IN"],
+    "instrument_type": "term_loan",
+    "customer_type": "institutional",
+    "transaction_type": "lending",
+    "is_priority_sector": true
+  },
+  {
+    "transaction_id": "TXN-1005",
+    "amount": 45000,
+    "currency": "USD",
+    "counterparty": "Northgate Retail Trading Co",
+    "counterparty_kyc_status": "unknown",
+    "jurisdictions": ["US"],
+    "instrument_type": "wire_transfer",
+    "customer_type": "retail",
+    "transaction_type": "cross_border_payment",
+    "counterparty_jurisdiction_risk": "standard"
+  }
+]

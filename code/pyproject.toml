@@ -1,0 +1,21 @@
+[tool.pytest.ini_options]
+# "mcp" (code/mcp) is on the path too so `fincompliance_mcp` is importable
+# without making `code/mcp` itself a package — see mcp/README.md for why
+# that distinction matters (it would otherwise shadow the real `mcp` SDK).
+pythonpath = [".", "mcp"]
+testpaths = ["backend/tests", "rag/tests", "llm/tests", "agentic/tests", "eval/tests", "mcp/tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["frontend", "infra"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+extend-exclude = "frontend|infra"

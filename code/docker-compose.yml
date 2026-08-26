@@ -1,0 +1,121 @@
+# ---------------------------------------------------------------------------
+# Local/single-region MVP topology (see requirements/11-non-goals-and-
+# assumptions.md — this stands in for the per-region EKS clusters of
+# requirements/06-infrastructure-nfr-requirements.md, with the same
+# component boundaries: postgres = registry/audit metadata, qdrant = vector
+# store, redis = cache, backend/mcp = the API + tool surface).
+#
+# Model-serving (vLLM) is intentionally NOT part of this compose file: it
+# needs GPU nodes (see INFRA-1.2) that a laptop/CI runner doesn't have. The
+# stack runs against the local_stub/local_hash providers by default (see
+# .env.example) and can be pointed at a real vLLM/TEI deployment by changing
+# the *_PROVIDER env vars only — no code or compose changes required.
+# ---------------------------------------------------------------------------
+name: finserv-compliance-assistant
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fca-postgres
+    environment:
+      POSTGRES_USER: fca
+      POSTGRES_PASSWORD: fca_local_dev_only
+      POSTGRES_DB: fca_registry
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fca -d fca_registry"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [fca-net]
+
+  redis:
+    image: redis:7-alpine
+    container_name: fca-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [fca-net]
+
+  qdrant:
+    image: qdrant/qdrant:v1.11.3
+    container_name: fca-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks: [fca-net]
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: fca-backend
+    env_file: .env
+    environment:
+      ENVIRONMENT: compose
+      DATABASE_URL: postgresql+psycopg://fca:fca_local_dev_only@postgres:5432/fca_registry
+      REDIS_URL: redis://redis:6379/0
+      QDRANT_URL: http://qdrant:6333
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+    networks: [fca-net]
+
+  mcp-server:
+    build:
+      context: .
+      dockerfile: mcp/Dockerfile
+    container_name: fca-mcp
+    env_file: .env
+    environment:
+      ENVIRONMENT: compose
+      DATABASE_URL: postgresql+psycopg://fca:fca_local_dev_only@postgres:5432/fca_registry
+      QDRANT_URL: http://qdrant:6333
+      MCP_TRANSPORT: sse
+      MCP_PORT: "8090"
+    ports:
+      - "8090:8090"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+    networks: [fca-net]
+
+  frontend:
+    image: node:20-alpine
+    container_name: fca-frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8080/api/v1
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks: [fca-net]
+
+networks:
+  fca-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  qdrant_data:

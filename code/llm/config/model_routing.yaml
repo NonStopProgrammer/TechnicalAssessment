@@ -1,0 +1,16 @@
+# LLM-2.3: task -> tier routing is config-driven, not LLM-decided, so
+# behavior is predictable and auditable. Only *which provider instance*
+# serves a tier under fallback (LLM-2.4) is dynamic at runtime.
+
+tasks:
+  intent_classification: router # LLM-2.1
+  transaction_type_classification: router
+  pii_prescan: router
+  qa_answer: generation # LLM-2.2
+  transaction_screening_narrative: generation
+  report_narrative: generation
+  regulatory_diff_summary: generation
+
+circuit_breaker: # LLM-2.4
+  failure_threshold: 3
+  reset_timeout_seconds: 60

@@ -1,0 +1,189 @@
+[
+  {
+    "id": "QA-01",
+    "question": "What is the minimum Common Equity Tier 1 (CET1) capital ratio banks must maintain under Basel III?",
+    "ground_truth_answer": "Banks must maintain a CET1 ratio of at least 4.5% of risk-weighted assets at all times.",
+    "expected_citation_keys": ["basel-iii-capital-adequacy-2023#6.1@2023-01-01"],
+    "framework": "basel_iii",
+    "difficulty": "easy",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-02",
+    "question": "What are the Tier 1 capital requirements under Basel III as amended in 2023?",
+    "ground_truth_answer": "Tier 1 capital, comprised of CET1 and Additional Tier 1, must be at least 6.0% of risk-weighted assets.",
+    "expected_citation_keys": ["basel-iii-capital-adequacy-2023#6.2@2023-01-01"],
+    "framework": "basel_iii",
+    "difficulty": "easy",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-03",
+    "question": "What is the Capital Conservation Buffer requirement under Basel III?",
+    "ground_truth_answer": "An additional 2.5% of risk-weighted assets, comprised of CET1 capital, on top of the minimum CET1 requirement.",
+    "expected_citation_keys": ["basel-iii-capital-adequacy-2023#6.4@2023-01-01"],
+    "framework": "basel_iii",
+    "difficulty": "easy",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-04",
+    "question": "What new capital buffer was introduced in the 2023 Basel III amendment?",
+    "ground_truth_answer": "A Countercyclical Capital Buffer of between 0% and 2.5% of risk-weighted assets, set by the national regulator.",
+    "expected_citation_keys": ["basel-iii-capital-adequacy-2023#6.5@2023-01-01"],
+    "framework": "basel_iii",
+    "difficulty": "medium",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-05",
+    "question": "What is the large exposure limit for a bank's exposure to a single counterparty under Basel III?",
+    "ground_truth_answer": "A bank's exposure to a single counterparty (or connected group) must not exceed 25% of its Tier 1 capital.",
+    "expected_citation_keys": ["basel-iii-large-exposures#9.1@2021-01-01"],
+    "framework": "basel_iii",
+    "difficulty": "easy",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-06",
+    "question": "An NBFC is originating a lending transaction that qualifies as Priority Sector Lending — what reporting obligation applies under RBI rules?",
+    "ground_truth_answer": "The transaction must be tagged as Priority Sector Lending at origination and included in the NBFC's quarterly PSL return to the RBI.",
+    "expected_citation_keys": ["rbi-priority-sector-lending#5.2@2020-08-13"],
+    "framework": "rbi",
+    "difficulty": "medium",
+    "expects_refusal": false,
+    "scenario_ref": "FR-2 scenario 4"
+  },
+  {
+    "id": "QA-07",
+    "question": "Within how many business days must a large exposure limit breach be reported to the supervisor under Basel III?",
+    "ground_truth_answer": "Within 5 business days of discovery.",
+    "expected_citation_keys": ["basel-iii-large-exposures#9.4@2021-01-01"],
+    "framework": "basel_iii",
+    "difficulty": "easy",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-08",
+    "question": "What must a firm do before executing a transaction in a complex product for a retail client under MiFID II?",
+    "ground_truth_answer": "It must first perform and document an appropriateness assessment, unless the execution-only exemption applies.",
+    "expected_citation_keys": ["mifid-ii-investor-protection#25.4@2018-01-03"],
+    "framework": "mifid_ii",
+    "difficulty": "easy",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-09",
+    "question": "What is considered a complex product under MiFID II?",
+    "ground_truth_answer": "Any financial instrument that does not meet the criteria for a non-complex instrument, including derivatives, structured products, and instruments embedding a derivative.",
+    "expected_citation_keys": ["mifid-ii-investor-protection#25.2@2018-01-03"],
+    "framework": "mifid_ii",
+    "difficulty": "easy",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-10",
+    "question": "What must a firm do if a client does not provide enough information for a MiFID II appropriateness assessment?",
+    "ground_truth_answer": "The firm must warn the client that it is not in a position to determine whether the product is appropriate.",
+    "expected_citation_keys": ["mifid-ii-investor-protection#25.3@2018-01-03"],
+    "framework": "mifid_ii",
+    "difficulty": "medium",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-11",
+    "question": "Above what amount must a cross-border payment to a non-KYC-verified entity in a high-risk jurisdiction be escalated to the MLRO under RBI rules?",
+    "ground_truth_answer": "USD 1,000,000 (or equivalent).",
+    "expected_citation_keys": ["rbi-kyc-master-direction#3.3@2016-02-25"],
+    "framework": "rbi",
+    "difficulty": "easy",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-12",
+    "question": "How should a transaction be risk-rated if a customer's KYC status cannot be determined, per RBI guidance?",
+    "ground_truth_answer": "It must be treated as unverified and rated no lower than MEDIUM risk pending confirmation — never assumed compliant.",
+    "expected_citation_keys": ["rbi-kyc-master-direction#3.4@2016-02-25"],
+    "framework": "rbi",
+    "difficulty": "medium",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-13",
+    "question": "When is Enhanced Due Diligence mandatory under the RBI KYC Master Direction?",
+    "ground_truth_answer": "For cross-border wire transfers, transactions involving FATF-identified high-risk jurisdictions, and politically exposed persons.",
+    "expected_citation_keys": ["rbi-kyc-master-direction#3.2@2016-02-25"],
+    "framework": "rbi",
+    "difficulty": "easy",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-14",
+    "question": "What percentage of Adjusted Net Bank Credit must large NBFC-ICCs allocate to Priority Sector Lending?",
+    "ground_truth_answer": "At least 40% of Adjusted Net Bank Credit, for NBFC-ICCs with asset size of ₹500 crore and above.",
+    "expected_citation_keys": ["rbi-priority-sector-lending#5.1@2020-08-13"],
+    "framework": "rbi",
+    "difficulty": "easy",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-15",
+    "question": "What happens if an NBFC falls short of its Priority Sector Lending target?",
+    "ground_truth_answer": "The shortfall must be deposited in the Rural Infrastructure Development Fund (RIDF) or another RBI-specified fund.",
+    "expected_citation_keys": ["rbi-priority-sector-lending#5.4@2020-08-13"],
+    "framework": "rbi",
+    "difficulty": "medium",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-16",
+    "question": "A bank is reviewing both a large intra-group derivative exposure and a retail sale of a structured note on the same day — which two regulatory frameworks' rules must compliance check?",
+    "ground_truth_answer": "Basel III's large exposure limit (intra-group derivative) and MiFID II's appropriateness assessment requirement (retail structured note).",
+    "expected_citation_keys": [
+      "basel-iii-large-exposures#9.1@2021-01-01",
+      "mifid-ii-investor-protection#25.1@2018-01-03"
+    ],
+    "framework": "cross_framework",
+    "difficulty": "hard",
+    "expects_refusal": false
+  },
+  {
+    "id": "QA-17",
+    "question": "What is the maximum allowable position limit for agricultural commodity futures contracts under CFTC position limits rules?",
+    "ground_truth_answer": "insufficient information in the indexed corpus",
+    "expected_citation_keys": [],
+    "framework": "out_of_corpus",
+    "difficulty": "medium",
+    "expects_refusal": true
+  },
+  {
+    "id": "QA-18",
+    "question": "A cross-border payment of $2 million is being sent to a non-KYC-verified entity in a high-risk jurisdiction — what RBI rule applies and what action is required?",
+    "ground_truth_answer": "RBI KYC §3.3 requires escalation to the Money Laundering Reporting Officer for enhanced due diligence before any funds are released, since the amount exceeds the USD 1,000,000 threshold.",
+    "expected_citation_keys": ["rbi-kyc-master-direction#3.3@2016-02-25"],
+    "framework": "rbi",
+    "difficulty": "medium",
+    "expects_refusal": false,
+    "scenario_ref": "FR-2 scenario 1"
+  },
+  {
+    "id": "QA-19",
+    "question": "An intra-group derivative trade exceeds the large exposure threshold — which Basel III rule governs this and what must happen?",
+    "ground_truth_answer": "Basel III §9.1/§9.3 (large exposures) governs; the exposure must be measured against the 25% of Tier 1 capital limit and, if breached, reported within 5 business days per §9.4.",
+    "expected_citation_keys": ["basel-iii-large-exposures#9.1@2021-01-01"],
+    "framework": "basel_iii",
+    "difficulty": "medium",
+    "expects_refusal": false,
+    "scenario_ref": "FR-2 scenario 2"
+  },
+  {
+    "id": "QA-20",
+    "question": "Is it permitted to sell a complex structured product to a retail customer without an appropriateness assessment, under MiFID II?",
+    "ground_truth_answer": "No — MiFID II §25.4 prohibits executing such a transaction without first performing and documenting an appropriateness assessment.",
+    "expected_citation_keys": ["mifid-ii-investor-protection#25.4@2018-01-03"],
+    "framework": "mifid_ii",
+    "difficulty": "medium",
+    "expects_refusal": false,
+    "scenario_ref": "FR-2 scenario 3"
+  }
+]

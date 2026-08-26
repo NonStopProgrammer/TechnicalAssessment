@@ -1,0 +1,66 @@
+# INFRA-1.2(c) / LLM-1.1: 70B generation tier, AWQ-quantized, tensor-parallel
+# across 4 GPUs on a g5.12xlarge node. Illustrative — see infra/README.md.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm-generation-tier
+  namespace: inference
+  labels: { app: vllm-generation-tier }
+spec:
+  replicas: 1 # INFRA-2.3: scale-to-floor, KEDA scales this on queue depth, never to zero
+  selector:
+    matchLabels: { app: vllm-generation-tier }
+  template:
+    metadata:
+      labels: { app: vllm-generation-tier }
+    spec:
+      nodeSelector:
+        node.kubernetes.io/instance-type: g5.12xlarge
+      containers:
+        - name: vllm
+          image: vllm/vllm-openai:v0.6.1
+          args:
+            - "--model=meta-llama/Llama-3.1-70B-Instruct"
+            - "--revision=c4a54c9" # LLM-1.4: pinned, never "main"
+            - "--quantization=awq"
+            - "--tensor-parallel-size=4"
+            - "--max-model-len=8192"
+          ports:
+            - containerPort: 8000
+          resources:
+            limits:
+              nvidia.com/gpu: 4
+          readinessProbe:
+            httpGet: { path: /health, port: 8000 }
+            initialDelaySeconds: 120 # multi-GPU tensor-parallel load is slow to warm
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vllm-generation-tier
+  namespace: inference
+spec:
+  selector: { app: vllm-generation-tier }
+  ports:
+    - { port: 8000, targetPort: 8000 }
+---
+# INFRA-2.2: KEDA scales on vLLM's own in-flight-request-queue metric, not
+# plain CPU/memory (which doesn't reflect GPU saturation).
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: vllm-generation-tier-scaler
+  namespace: inference
+spec:
+  scaleTargetRef:
+    name: vllm-generation-tier
+  minReplicaCount: 1
+  maxReplicaCount: 5
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus.platform.svc:9090
+        metricName: vllm_num_requests_waiting
+        threshold: "10"
+        query: sum(vllm:num_requests_waiting{deployment="vllm-generation-tier"})

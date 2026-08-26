@@ -1,0 +1,21 @@
+# LLM-1.4: model registry & pinning. Every deployed model has an explicit
+# version pin (weights hash + quantization config) — no silent "latest"
+# resolution. Recorded in the FR-5 provenance block on every response.
+
+router_tier:
+  model_id: meta-llama/Llama-3.1-8B-Instruct
+  weights_revision: "5206a32" # HuggingFace revision pin, never "main"
+  quantization: none
+  serving_engine: vllm
+
+generation_tier:
+  model_id: meta-llama/Llama-3.1-70B-Instruct
+  weights_revision: "c4a54c9" # HuggingFace revision pin, never "main"
+  quantization: awq-4bit # LLM-1.3: fits commodity GPU nodes, validated against EVAL-2 floors
+  serving_engine: vllm
+
+local_stub:
+  model_id: local-stub-extractive-v1
+  weights_revision: "n/a"
+  quantization: none
+  serving_engine: in-process
