@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phoenix — The Self-Healing ETL Platform</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- ═══════════════════════ COMPONENT: NAVIGATION ═══════════════════════ -->
+<nav>
+  <div class="navin">
+    <a class="brand" href="#top">Phoenix</a>
+    <div class="navlinks">
+      <a href="#journey">Pipeline</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#agent">Healing Agent</a>
+      <a href="#builder">Builder</a>
+      <a href="#trust">Trust</a>
+      <a href="#deploy">Deployment</a>
+      <a href="#roadmap">Roadmap</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ COMPONENT: HERO ═══════════════════════ -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow">The Self-Healing ETL Platform</div>
+    <h1>Phoenix</h1>
+    <h2>Pipelines that heal themselves.</h2>
+    <p>One definition. Any environment. Batch or streaming. When a pipeline fails at 3&nbsp;a.m., Phoenix classifies the failure, fixes what it can, proves the fix with data — and lets your team sleep.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="#architecture">View the architecture</a>
+      <a class="btn btn-secondary" href="#agent">How healing works</a>
+    </div>
+    <div class="hero-tags">
+      <span class="tag hot">Self-healing</span>
+      <span class="tag">On-prem Cloudera + GCP</span>
+      <span class="tag">Apache Spark</span>
+      <span class="tag">Batch + Streaming</span>
+      <span class="tag">Git + Harness</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════ COMPONENT: PROBLEM ═══════════════════════ -->
+<div class="problem">
+  <div class="wrap">
+    <div class="rv">
+      <div class="sec-eyebrow">Why now</div>
+      <p class="bigsay">Today, every pipeline failure becomes <span class="hurt">a human task</span>. An email lands in an inbox. An engineer greps logs. A job is rerun by hand — <span class="fade">and the SLA is already gone.</span></p>
+    </div>
+    <div class="probgrid">
+      <div class="prob rv"><span class="k">HOURS TO RECOVER</span><p>Triage is manual and identical every time. Recovery knowledge lives in a few heads.</p></div>
+      <div class="prob rv"><span class="k">RISKY RERUNS</span><p>Jobs aren't idempotent — a manual rerun can double-load a target or skip a window.</p></div>
+      <div class="prob rv"><span class="k">QUALITY FOUND TOO LATE</span><p>Bad data is discovered by consumers and reports, then traced backwards at high cost.</p></div>
+      <div class="prob rv"><span class="k">EVERY FEED IS CODE</span><p>Weeks of bespoke Spark and shell scripting per source. Nothing shared, nothing reused.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ COMPONENT: PIPELINE JOURNEY ═══════════════════════ -->
+<section id="journey">
+  <div class="wrap">
+    <div class="rv">
+      <div class="sec-eyebrow">The pipeline</div>
+      <h2 class="sec-title">A pipeline is a definition, not a program.</h2>
+      <p class="sec-lede">In Phoenix, a pipeline is one YAML spec plus SQL files, versioned in Git. The engine — Apache Spark, on YARN on-prem and Dataproc on GCP — does the engineering once. Every feed inherits it.</p>
+    </div>
+    <div class="journey">
+      <div class="jrow rv">
+        <div class="jnum">01</div>
+        <div>
+          <h3>Ingest — from anywhere, incrementally</h3>
+          <p>Pluggable readers pull from Oracle, SQL Server, any JDBC source, files on SFTP/NFS/HDFS/GCS, or Kafka streams. Watermark bookkeeping means each run reads <b>only what's new since the last success</b> — and schema is captured on read, so drift is caught at the door.</p>
+          <div class="jtags"><span class="jtag">JDBC</span><span class="jtag">Files</span><span class="jtag">Kafka</span><span class="jtag g">Watermarks</span><span class="jtag g">Schema capture</span></div>
+        </div>
+      </div>
+      <div class="jrow rv">
+        <div class="jnum">02</div>
+        <div>
+          <h3>Curate — business logic is SQL</h3>
+          <p>Transformations are a chain of Spark SQL steps — <span class="mono">standardize → enrich → curate</span> — each one a named view for the next, parameterized by run date and environment. Analysts write it; Git reviews it; nobody writes engine code.</p>
+          <div class="jtags"><span class="jtag">Spark SQL</span><span class="jtag">Multi-step</span><span class="jtag g">PII masking library</span></div>
+        </div>
+      </div>
+      <div class="jrow rv">
+        <div class="jnum">03</div>
+        <div>
+          <h3>Validate — nothing unproven lands</h3>
+          <p>A data-quality gate sits between transform and write: null, uniqueness, row-count, referential and custom SQL rules, each with an explicit outcome — fail the run, warn, or quarantine the offending records below a threshold. Source-vs-target reconciliation runs on every load.</p>
+          <div class="jtags"><span class="jtag g">DQ gate</span><span class="jtag">Quarantine + replay</span><span class="jtag">Reconciliation</span></div>
+        </div>
+      </div>
+      <div class="jrow rv">
+        <div class="jnum">04</div>
+        <div>
+          <h3>Deliver — idempotent, everywhere</h3>
+          <p>Writers land data in Cloudera Hive, GCP BigQuery, any JDBC target, or partner file extracts with headers, trailers and control totals. Every write is idempotent — partition overwrite or keyed merge — so <b>any rerun, any backfill, is boring</b>.</p>
+          <div class="jtags"><span class="jtag">Hive</span><span class="jtag">BigQuery</span><span class="jtag">JDBC</span><span class="jtag">File extracts</span><span class="jtag g">Idempotent</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ COMPONENT: ARCHITECTURE DIAGRAM ═══════════════════════ -->
+<section class="arch" id="architecture">
+  <div class="wrap">
+    <div class="rv center">
+      <div class="sec-eyebrow">Architecture</div>
+      <h2 class="sec-title">One platform, five planes.</h2>
+      <p class="sec-lede">Definitions live in Git. A control plane schedules and validates. Spark executes. The Healing Agent watches every run. Observability receives everything. The moving dashes show live data and event flow.</p>
+    </div>
+    <div class="diagram-frame rv">
+      <svg viewBox="0 0 1160 540" role="img" aria-label="Phoenix architecture: Git definitions and the Workflow Builder deploy via Harness to a control plane with AutoSys and Composer; Spark executes reader, SQL curation, data-quality gate and writer stages; the Healing Agent receives failure events and sends remediations back; all planes emit into Splunk, logging, audit tables and email.">
+        <defs>
+          <marker id="mN" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#86868b"/></marker>
+          <marker id="mB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0066cc"/></marker>
+          <marker id="mG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1a7f37"/></marker>
+        </defs>
+        <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" fill="#1d1d1f">
+
+          <!-- definition plane -->
+          <rect x="20" y="16" width="880" height="86" rx="12" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.5"/>
+          <text x="38" y="42" font-size="12" font-weight="700" fill="#6e6e73" letter-spacing="2">DEFINITION · GIT</text>
+          <rect x="38" y="54" width="196" height="36" rx="8" fill="#f5f5f7"/><text x="136" y="77" text-anchor="middle" font-size="13.5">pipeline specs (YAML)</text>
+          <rect x="246" y="54" width="150" height="36" rx="8" fill="#f5f5f7"/><text x="321" y="77" text-anchor="middle" font-size="13.5">SQL transforms</text>
+          <rect x="408" y="54" width="120" height="36" rx="8" fill="#f5f5f7"/><text x="468" y="77" text-anchor="middle" font-size="13.5">DQ rules</text>
+          <rect x="540" y="54" width="130" height="36" rx="8" fill="#f5f5f7"/><text x="605" y="77" text-anchor="middle" font-size="13.5">env profiles</text>
+          <rect x="682" y="54" width="200" height="36" rx="8" fill="#f5f5f7"/><text x="782" y="77" text-anchor="middle" font-size="13.5">generated JIL + DAGs</text>
+
+          <!-- workflow builder -->
+          <rect x="930" y="16" width="210" height="86" rx="12" fill="#ffffff" stroke="#0066cc" stroke-width="1.5"/>
+          <text x="948" y="42" font-size="12" font-weight="700" fill="#0066cc" letter-spacing="2">WORKFLOW BUILDER</text>
+          <text x="948" y="66" font-size="13" fill="#6e6e73">drag-drop + copilot →</text>
+          <text x="948" y="86" font-size="13" fill="#6e6e73">pull request into Git</text>
+          <line x1="930" y1="59" x2="906" y2="59" stroke="#0066cc" stroke-width="1.8" class="flow slow" marker-end="url(#mB)"/>
+
+          <!-- deploy arrow -->
+          <line x1="460" y1="102" x2="460" y2="140" stroke="#86868b" stroke-width="1.5" marker-end="url(#mN)"/>
+          <text x="474" y="128" font-size="13" fill="#6e6e73">deployed only via Harness</text>
+
+          <!-- control plane -->
+          <rect x="20" y="144" width="880" height="86" rx="12" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.5"/>
+          <text x="38" y="170" font-size="12" font-weight="700" fill="#6e6e73" letter-spacing="2">CONTROL PLANE</text>
+          <rect x="38" y="182" width="250" height="36" rx="8" fill="#f5f5f7"/>
+          <text x="163" y="200" text-anchor="middle" font-size="13.5">orchestrators</text>
+          <text x="163" y="214" text-anchor="middle" font-size="11.5" fill="#6e6e73">AutoSys · Cloud Composer</text>
+          <rect x="300" y="182" width="250" height="36" rx="8" fill="#f5f5f7"/>
+          <text x="425" y="200" text-anchor="middle" font-size="13.5">definition factory</text>
+          <text x="425" y="214" text-anchor="middle" font-size="11.5" fill="#6e6e73">one spec → JIL + DAGs</text>
+          <rect x="562" y="182" width="320" height="36" rx="8" fill="#f5f5f7"/>
+          <text x="722" y="200" text-anchor="middle" font-size="13.5">metadata + state store</text>
+          <text x="722" y="214" text-anchor="middle" font-size="11.5" fill="#6e6e73">runs · watermarks · healing audit</text>
+
+          <!-- submit arrow -->
+          <line x1="460" y1="230" x2="460" y2="268" stroke="#86868b" stroke-width="1.5" marker-end="url(#mN)"/>
+          <text x="474" y="256" font-size="13" fill="#6e6e73">submits run — spark-submit / Dataproc</text>
+
+          <!-- execution plane -->
+          <rect x="20" y="272" width="880" height="122" rx="12" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.5"/>
+          <text x="38" y="298" font-size="12" font-weight="700" fill="#6e6e73" letter-spacing="2">EXECUTION · SPARK — YARN &amp; DATAPROC · BATCH &amp; STREAMING</text>
+          <rect x="38" y="310" width="160" height="48" rx="8" fill="#f5f5f7"/>
+          <text x="118" y="330" text-anchor="middle" font-size="13.5" font-weight="600">Reader SPI</text>
+          <text x="118" y="348" text-anchor="middle" font-size="11.5" fill="#6e6e73">JDBC · files · Kafka</text>
+          <line x1="198" y1="334" x2="238" y2="334" stroke="#0066cc" stroke-width="2" class="flow" marker-end="url(#mB)"/>
+          <rect x="240" y="310" width="170" height="48" rx="8" fill="#f5f5f7"/>
+          <text x="325" y="330" text-anchor="middle" font-size="13.5" font-weight="600">SQL curation</text>
+          <text x="325" y="348" text-anchor="middle" font-size="11.5" fill="#6e6e73">business logic steps</text>
+          <line x1="410" y1="334" x2="450" y2="334" stroke="#0066cc" stroke-width="2" class="flow" marker-end="url(#mB)"/>
+          <rect x="452" y="310" width="150" height="48" rx="8" fill="#ffffff" stroke="#1a7f37" stroke-width="1.5"/>
+          <text x="527" y="330" text-anchor="middle" font-size="13.5" font-weight="600">DQ gate</text>
+          <text x="527" y="348" text-anchor="middle" font-size="11.5" fill="#6e6e73">pass · quarantine · fail</text>
+          <line x1="602" y1="334" x2="642" y2="334" stroke="#0066cc" stroke-width="2" class="flow" marker-end="url(#mB)"/>
+          <rect x="644" y="310" width="238" height="48" rx="8" fill="#f5f5f7"/>
+          <text x="763" y="330" text-anchor="middle" font-size="13.5" font-weight="600">Writer SPI</text>
+          <text x="763" y="348" text-anchor="middle" font-size="11.5" fill="#6e6e73">Hive · BigQuery · JDBC · file extracts</text>
+          <text x="38" y="382" font-size="12.5" fill="#6e6e73">watermarks &amp; checkpoints committed per run · every writer idempotent — any rerun is safe</text>
+
+          <!-- healing agent plane -->
+          <rect x="930" y="144" width="210" height="250" rx="12" fill="#ffffff" stroke="#1a7f37" stroke-width="1.8"/>
+          <text x="948" y="170" font-size="12" font-weight="700" fill="#1a7f37" letter-spacing="2">HEALING AGENT</text>
+          <rect x="948" y="184" width="174" height="36" rx="8" fill="#f2f7f3"/><text x="1035" y="207" text-anchor="middle" font-size="13">classify — 8 classes</text>
+          <rect x="948" y="230" width="174" height="36" rx="8" fill="#f2f7f3"/><text x="1035" y="253" text-anchor="middle" font-size="13">remediate — bounded</text>
+          <rect x="948" y="276" width="174" height="36" rx="8" fill="#f2f7f3"/><text x="1035" y="299" text-anchor="middle" font-size="13">verify — DQ + counts</text>
+          <rect x="948" y="322" width="174" height="36" rx="8" fill="#ffffff" stroke="#1a7f37" stroke-dasharray="5 4"/><text x="1035" y="345" text-anchor="middle" font-size="13">AI diagnosis — guarded</text>
+          <circle cx="1035" cy="380" r="4" fill="#1a7f37" class="pulse"/>
+          <text x="1035" y="380" text-anchor="middle" font-size="0">agent heartbeat</text>
+
+          <!-- healing flows -->
+          <path d="M900,352 L930,352" fill="none" stroke="#1a7f37" stroke-width="1.8" class="flow heal" marker-end="url(#mG)"/>
+          <text x="915" y="372" text-anchor="middle" font-size="11.5" fill="#1a7f37">events</text>
+          <path d="M930,200 L900,200" fill="none" stroke="#1a7f37" stroke-width="1.8" class="flow" marker-end="url(#mG)"/>
+          <text x="915" y="188" text-anchor="middle" font-size="11.5" fill="#1a7f37">actions</text>
+
+          <!-- observability plane -->
+          <rect x="20" y="428" width="1120" height="88" rx="12" fill="#ffffff" stroke="#d2d2d7" stroke-width="1.5"/>
+          <text x="38" y="454" font-size="12" font-weight="700" fill="#6e6e73" letter-spacing="2">OBSERVABILITY &amp; GOVERNANCE</text>
+          <rect x="38" y="466" width="250" height="38" rx="8" fill="#f5f5f7"/>
+          <text x="163" y="484" text-anchor="middle" font-size="13.5">Splunk</text>
+          <text x="163" y="499" text-anchor="middle" font-size="11.5" fill="#6e6e73">dashboards · alerts · searches</text>
+          <rect x="300" y="466" width="260" height="38" rx="8" fill="#f5f5f7"/>
+          <text x="430" y="484" text-anchor="middle" font-size="13.5">Log4j2 structured logging</text>
+          <text x="430" y="499" text-anchor="middle" font-size="11.5" fill="#6e6e73">JSON · run-id correlated → HEC</text>
+          <rect x="572" y="466" width="250" height="38" rx="8" fill="#f5f5f7"/>
+          <text x="697" y="484" text-anchor="middle" font-size="13.5">audit tables</text>
+          <text x="697" y="499" text-anchor="middle" font-size="11.5" fill="#6e6e73">runs · DQ · healing · lineage</text>
+          <rect x="834" y="466" width="286" height="38" rx="8" fill="#f5f5f7"/>
+          <text x="977" y="484" text-anchor="middle" font-size="13.5">email + tickets — tiered</text>
+          <text x="977" y="499" text-anchor="middle" font-size="11.5" fill="#6e6e73">digest · degraded · escalated</text>
+
+          <line x1="460" y1="394" x2="460" y2="426" stroke="#86868b" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#mN)"/>
+          <line x1="1035" y1="394" x2="1035" y2="426" stroke="#86868b" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#mN)"/>
+          <text x="480" y="416" font-size="12" fill="#6e6e73">every run emits one correlated envelope</text>
+        </g>
+      </svg>
+      <p class="diagram-caption"><b>Reading the diagram:</b> blue moving dashes are the data path through a run; green dashes are the event loop between execution and the Healing Agent — failure events flow out, bounded remediation actions flow back. The agent plane is deliberately separate from execution: healing logic is written once, for every pipeline.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ COMPONENT: HEALING AGENT ═══════════════════════ -->
+<section id="agent">
+  <div class="wrap">
+    <div class="rv center">
+      <div class="sec-eyebrow">The agent plane</div>
+      <h2 class="sec-title">Meet the Healing Agent.</h2>
+      <p class="sec-lede">Not a dashboard. Not a cron job that pokes the Spark UI. A small, always-on control service that treats every failure as an event to be handled — with bounded, audited actions.</p>
+    </div>
+
+    <div class="agent-cols">
+      <div class="acard rv">
+        <span class="lbl">LAYER 1 · IN-FLIGHT GUARDS</span>
+        <h3>Inside the Spark job</h3>
+        <p>The framework itself handles what's cheap to handle in place: <b>fast retries</b> with backoff on transient errors, <b>bad-record routing</b> to quarantine mid-flight, <b>checkpoint and watermark commits</b> so state is never ambiguous.</p>
+        <p>If the job still dies, it dies loudly — emitting a structured <b>failure event</b> with the exception chain, stage, metrics and run context.</p>
+      </div>
+      <div class="acard hotb rv">
+        <span class="lbl">LAYER 2 · THE HEALING AGENT</span>
+        <h3>Outside the job, always on</h3>
+        <p>A lightweight long-running service — on-prem as a supervised daemon, on GCP as a Cloud Run service. It is <b>event-driven, not polling</b>: it subscribes to run lifecycle and failure events written by every job.</p>
+        <p>On a terminal failure it <b>classifies → decides → acts</b>: resubmits through AutoSys or Composer APIs with retuned resources, evolves a compatible schema, opens a circuit breaker, or escalates with full context. Then it <b>verifies</b> — DQ re-check, counts reconciled — before calling anything healed.</p>
+      </div>
+    </div>
+
+    <div class="qa rv">
+      <div class="q">So is it long-running, and does it monitor Spark?</div>
+      <p><b>Long-running: yes. Watching Spark's UI: no.</b> Every Phoenix run writes lifecycle events (started, stage completed, failed, succeeded) to the metadata store as it executes. The agent consumes those events the moment they land — reaction time is seconds, and the logic is restart-safe because all of its state lives in the database, not in memory. As a safety net, a <b>reconciliation sweep</b> runs every few minutes to catch the one case events can't cover: a driver killed so abruptly it never wrote its own failure event. Heartbeat missing → treated as a failure event → same healing path. Every action the agent takes is recorded in the healing audit and is idempotent — two agents, or an agent restarting mid-action, can never double-fire a remediation.</p>
+    </div>
+
+    <div class="timeline rv" id="healTimeline">
+      <div class="tl-title">A 2 A.M. FAILURE, HANDLED — NO HUMANS PRESENT</div>
+      <div class="tl">
+        <div class="tstep"><div class="tdot"></div><div class="tt">T+0s</div><div class="td1">Executor OOM</div><div class="td2">job dies · failure event written with run context</div></div>
+        <div class="tstep"><div class="tdot"></div><div class="tt">T+4s</div><div class="td1">Classified</div><div class="td2">agent matches event → resource class</div></div>
+        <div class="tstep"><div class="tdot"></div><div class="tt">T+10s</div><div class="td1">Remediated</div><div class="td2">resubmit at next memory tier — capped at 2 steps</div></div>
+        <div class="tstep"><div class="tdot"></div><div class="tt">T+14m</div><div class="td1">Verified</div><div class="td2">run green · DQ passed · counts reconcile</div></div>
+        <div class="tstep human"><div class="tdot"></div><div class="tt">T+8h</div><div class="td1">You read a digest</div><div class="td2">one line in the morning email — tuning delta saved</div></div>
+      </div>
+    </div>
+
+    <div class="agent-cols" style="margin-top:18px">
+      <div class="acard rv">
+        <span class="lbl">EIGHT FAILURE CLASSES, EIGHT PLAYBOOKS</span>
+        <h3>Deterministic first</h3>
+        <p><b>Transient infra</b> → retry + circuit breaker · <b>OOM</b> → retune &amp; resubmit · <b>compatible schema drift</b> → evolve target · <b>breaking drift</b> → halt + quarantine · <b>bad records</b> → quarantine + replay · <b>upstream late</b> → wait within SLA · <b>partial write</b> → idempotent rerun · <b>logic error</b> → never retried, straight to the owner.</p>
+      </div>
+      <div class="acard rv">
+        <span class="lbl">AI FOR THE LONG TAIL</span>
+        <h3>Diagnosis, with guardrails</h3>
+        <p>For failures no rule can name, an AI model reads the logs, run history and healing audit, and returns a <b>diagnosis plus a proposed action</b>. It may only execute actions already on the pre-approved runbook list — anything novel goes to a human, diagnosis attached. Every AI decision is audited like any other.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ COMPONENT: WORKFLOW BUILDER MOCK ═══════════════════════ -->
+<section class="builder" id="builder">
+  <div class="wrap">
+    <div class="rv center">
+      <div class="sec-eyebrow">The E2E product</div>
+      <h2 class="sec-title">Build a pipeline the way you'd sketch it.</h2>
+      <p class="sec-lede">The Workflow Builder turns a drag-and-drop canvas — or a plain-English sentence — into the exact YAML and SQL an engineer would write. Then it takes the governed road to production. Watch a run below.</p>
+    </div>
+
+    <div class="mockwin rv" id="builderMock">
+      <div class="mockbar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="t">Phoenix Builder — orders_daily.pipeline.yaml</span>
+      </div>
+      <div class="mockbody">
+        <div class="mside">
+          <div class="h">PALETTE</div>
+          <div class="mitem">JDBC source</div>
+          <div class="mitem">File source</div>
+          <div class="mitem">Kafka stream</div>
+          <div class="mitem">SQL step</div>
+          <div class="mitem">DQ rule set</div>
+          <div class="mitem">Hive / BigQuery</div>
+          <div class="mitem">File extract</div>
+        </div>
+        <div class="mcanvas">
+          <div class="canvas-grid">
+            <div class="node" data-step="0"><span class="status"></span><div class="nt">ORDERS</div><div class="nd">oracle_crm · incremental</div></div>
+            <div class="narrow" data-arrow="0">→</div>
+            <div class="node" data-step="1"><span class="status"></span><div class="nt">curate</div><div class="nd">2 SQL steps</div></div>
+            <div class="narrow" data-arrow="1">→</div>
+            <div class="node" data-step="2"><span class="status"></span><div class="nt">quality</div><div class="nd">4 rules · 0.5% gate</div></div>
+            <div class="narrow" data-arrow="2">→</div>
+            <div class="node" data-step="3"><span class="status"></span><div class="nt">orders_curated</div><div class="nd">BigQuery · daily 02:00</div></div>
+          </div>
+          <div class="canvas-note">drag · drop · configure — healing policy and SLA are set per node</div>
+        </div>
+        <div class="mright">
+          <div class="h">GENERATED SPEC</div>
+          <div class="spec"><span class="k">pipeline:</span> orders_daily
+<span class="k">mode:</span> batch
+<span class="k">source:</span>
+  <span class="k">type:</span> jdbc
+  <span class="k">connection:</span> oracle_crm
+  <span class="k">incremental:</span> LAST_UPDATED_TS
+<span class="k">quality:</span>
+  <span class="k">threshold:</span> 0.5%   <span class="c"># quarantine gate</span>
+<span class="k">target:</span>
+  <span class="k">type:</span> bigquery
+  <span class="k">write_mode:</span> overwrite_partition
+<span class="k">healing:</span>
+  <span class="k">retry:</span> 3 · backoff
+  <span class="k">on_oom:</span> escalate_resources</div>
+        </div>
+      </div>
+      <div class="mstatus" id="mockStatus">
+        <span class="sdot"></span>
+        <span id="mockText">Ready — validated against spec schema</span>
+        <div class="progress"><span id="mockBar"></span></div>
+      </div>
+    </div>
+
+    <div class="bsteps rv">
+      <div class="bstep"><div class="a">Design</div><div class="b">canvas / copilot</div></div>
+      <div class="barrow">→</div>
+      <div class="bstep"><div class="a">Generate</div><div class="b">YAML + SQL</div></div>
+      <div class="barrow">→</div>
+      <div class="bstep"><div class="a">Validate</div><div class="b">schema · dry-run</div></div>
+      <div class="barrow">→</div>
+      <div class="bstep hot"><div class="a">GitHub PR</div><div class="b">CODEOWNERS · CI</div></div>
+      <div class="barrow">→</div>
+      <div class="bstep hot"><div class="a">Harness</div><div class="b">dev → QA → prod</div></div>
+      <div class="barrow">→</div>
+      <div class="bstep"><div class="a">Observe</div><div class="b">status in builder</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ COMPONENT: TRUST FEATURES ═══════════════════════ -->
+<section id="trust">
+  <div class="wrap">
+    <div class="rv center">
+      <div class="sec-eyebrow">Trust, built in</div>
+      <h2 class="sec-title">Everything watches. Everything is written down.</h2>
+      <p class="sec-lede">Every run emits one correlated envelope — run-id, pipeline, versions, stage — so logs, metrics, quality and audit all join.</p>
+    </div>
+    <div class="fgrid">
+      <div class="feat rv"><span class="fk">LOGGING</span><h3>Apache Log4j2</h3><p>Structured JSON, one schema, run-id on every line, driver and executor logs unified — <b>no grep archaeology</b>.</p></div>
+      <div class="feat rv"><span class="fk">OBSERVABILITY</span><h3>Splunk</h3><p>Logs and metrics flow to Splunk over HEC: health dashboards, alerts on failure class and SLA risk, saved searches per failure taxonomy.</p></div>
+      <div class="feat rv"><span class="fk">AUDIT</span><h3>Audit tables</h3><p>Runs, versions, row counts, DQ results, healing actions, schema changes — <b>13 months, query-ready</b>. Regulator questions become SQL.</p></div>
+      <div class="feat rv"><span class="fk">NOTIFICATIONS</span><h3>Tiered email &amp; escalation</h3><p><b>Self-healed</b> → daily digest. <b>Degraded</b> → team email. <b>Escalated</b> → ticket + page with full context. Tier one never wakes anyone.</p></div>
+      <div class="feat rv"><span class="fk">SLA</span><h3>Predictive SLA watch</h3><p>Stage-duration history predicts misses and alerts <b>before</b> the deadline — not after the report is late.</p></div>
+      <div class="feat rv"><span class="fk">GOVERNANCE</span><h3>Lineage &amp; policy</h3><p>Lineage events per run into the enterprise catalog; PII tags in the spec enforce masking before any write; per-pipeline service accounts.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ COMPONENT: DEPLOYMENT ═══════════════════════ -->
+<section class="problem" id="deploy">
+  <div class="wrap">
+    <div class="rv center">
+      <div class="sec-eyebrow">Deployment</div>
+      <h2 class="sec-title">One artifact. Two worlds. Zero drift.</h2>
+      <p class="sec-lede">Everything ships from Git through Harness — framework releases and pipeline configs alike. On-prem and GCP are stages of the <b>same release</b>, so versions can never silently diverge. Rollback is repointing to the previous immutable artifact.</p>
+    </div>
+    <div class="envs">
+      <div class="env rv">
+        <div class="sub">ENVIRONMENT A</div>
+        <h3>On-prem · Cloudera</h3>
+        <ul>
+          <li><b>AutoSys</b> — generated JIL, thin trigger only</li>
+          <li><b>Spark on YARN</b> — the approved cluster</li>
+          <li><b>Hive + HDFS</b> · Kafka</li>
+          <li><b>PostgreSQL</b> — metadata &amp; healing state</li>
+          <li><b>Splunk</b> · Kerberos + Ranger · Vault</li>
+        </ul>
+      </div>
+      <div class="env rv">
+        <div class="sub">ENVIRONMENT B</div>
+        <h3>Google Cloud</h3>
+        <ul>
+          <li><b>Cloud Composer</b> — generated DAGs, thin trigger only</li>
+          <li><b>Spark on Dataproc</b> — same JAR, unmodified</li>
+          <li><b>BigQuery + GCS</b> · Pub/Sub or Kafka</li>
+          <li><b>Cloud SQL</b> — metadata &amp; healing state</li>
+          <li><b>Splunk</b> · IAM + VPC-SC · Secret Manager</li>
+        </ul>
+      </div>
+    </div>
+    <div class="parity rv">Same framework JAR · same pipeline specs · same healing policies — the environment is a config profile.</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ COMPONENT: ROADMAP ═══════════════════════ -->
+<section id="roadmap" style="padding-top:70px">
+  <div class="wrap">
+    <div class="rv center">
+      <div class="sec-eyebrow">Roadmap</div>
+      <h2 class="sec-title">Value from phase one.</h2>
+    </div>
+    <div class="road">
+      <div class="rph rv"><div class="n">P0 · 2–3 WKS</div><h4>Foundations</h4><p>Repos, Harness, metadata schema, baseline metrics captured.</p></div>
+      <div class="rph rv"><div class="n">P1 · 6–8 WKS</div><h4>Batch MVP</h4><p>Two real pipelines live on both platforms from one config.</p></div>
+      <div class="rph rv"><div class="n">P2 · 4–6 WKS</div><h4>Quality &amp; observability</h4><p>DQ gate, Splunk, audit tables, tiered alerts, run dashboard.</p></div>
+      <div class="rph rv"><div class="n">P3 · 6–8 WKS</div><h4>Streaming</h4><p>Kafka + checkpoint recovery; restart with zero loss, zero dupes.</p></div>
+      <div class="rph rv"><div class="n">P4 · ~6 WKS</div><h4>Full self-healing</h4><p>Most failure classes resolve with no human action.</p></div>
+      <div class="rph rv"><div class="n">P5 · EXPLORE</div><h4>AI layer + Builder GA</h4><p>Guarded diagnosis, copilot, anomaly detection — on real history.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ COMPONENT: CTA + FOOTER ═══════════════════════ -->
+<div class="cta">
+  <div class="wrap">
+    <h2 class="rv">Data pipelines,<br>meet decision pipelines.</h2>
+    <p class="rv">The next generation of pipelines won't just process data. They'll reason about their own state, recover from failure, and tell you about it afterwards.</p>
+    <div class="btn-row rv">
+      <a class="btn btn-primary" href="#architecture">Review the architecture</a>
+      <a class="btn btn-secondary" href="#roadmap">See the roadmap</a>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="wrap">Phoenix — Self-Healing ETL Platform · working name · concept site · deployed via Git + Harness, like everything else</div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
